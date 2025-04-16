@@ -1,0 +1,17 @@
+{
+  "resourceName": "TodoTrail1Files",
+  "policyUUID": "e93c90f3",
+  "bucketName": "todotrail1ee8df98725e449c0bf093013e73b8d9d",
+  "storageAccess": "authAndGuest",
+  "guestAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ],
+  "groupAccess": {}
+}

@@ -1,0 +1,241 @@
+import React, { useState, useEffect } from 'react';
+import { generateClient } from 'aws-amplify/api';
+import { getUrl, uploadData, remove } from 'aws-amplify/storage';
+import { listTodos, getTodo } from '../graphql/queries';
+import { createTodo, updateTodo, deleteTodo } from '../graphql/mutations';
+import { useNavigate } from 'react-router-dom';
+
+const client = generateClient();
+
+function Todos({ user }) {
+    const [todos, setTodos] = useState([]);
+    const [newTodo, setNewTodo] = useState({ name: '', description: '', file: null });
+    const [showModal, setShowModal] = useState(false);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        fetchTodos();
+    }, []);
+
+    const fetchTodos = async () => {
+        try {
+            const res = await client.graphql({ query: listTodos });
+            console.log(res);
+            const todosWithUrl = await Promise.all(
+                res.data.listTodos.items.map(async (todo) => {
+                    if (todo.file) {
+                        const { url } = await getUrl({
+                            path: todo.file,
+                            options: { expiresIn: 3600 }
+                        });
+                        return { ...todo, fileUrl: url.href };
+                    }
+                    return todo;
+                })
+            );
+            setTodos(todosWithUrl);
+        } catch (error) {
+            console.error('Error fetching todos:', error);
+        }
+    };
+
+    const handleAdd = async () => {
+        try {
+            let fileKey = null;
+
+            if (newTodo.file) {
+                const fileName = `${Date.now()}-${newTodo.file.name}`;
+                const s3Path = `todos/${fileName}`;
+                const result = await uploadData({
+                    path: s3Path,
+                    data: newTodo.file,
+                    options: { level: 'public' }
+                }).result;
+                fileKey = s3Path;
+            }
+
+            const todoInput = {
+                name: newTodo.name,
+                description: newTodo.description,
+                file: fileKey,
+                done: false
+            };
+
+            await client.graphql({ query: createTodo, variables: { input: todoInput } });
+            setNewTodo({ name: '', description: '', file: null });
+            setShowModal(false);
+            fetchTodos();
+        } catch (error) {
+            console.error('Error adding todo:', error);
+        }
+    };
+
+    const handleDelete = async (id) => {
+        try {
+            const todoResult = await client.graphql({ query: getTodo, variables: { id } });
+            const todo = todoResult.data.getTodo;
+
+            if (todo.file) {
+                const s3Key = todo.file.replace(/^\/?public\//, '');
+                await remove({ key: s3Key, options: { level: 'public' } });
+            }
+
+            await client.graphql({ query: deleteTodo, variables: { input: { id } } });
+            fetchTodos();
+        } catch (error) {
+            console.error("Error deleting todo and image:", error);
+        }
+    };
+
+    const handleToggleDone = async (todo) => {
+        try {
+            await client.graphql({
+                query: updateTodo,
+                variables: { input: { id: todo.id, done: !todo.done } },
+            });
+            fetchTodos();
+        } catch (error) {
+            console.error("Error toggling todo:", error);
+        }
+    };
+    const convertToIST = (utcDateString) => {
+        const date = new Date(utcDateString);
+
+        const time = new Intl.DateTimeFormat('en-IN', {
+            timeZone: 'Asia/Kolkata',
+            hour: 'numeric',
+            minute: 'numeric',
+            hour12: true
+        }).format(date);
+
+        const day = new Intl.DateTimeFormat('en-IN', {
+            timeZone: 'Asia/Kolkata',
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric'
+        }).format(date);
+
+        return `${time}, ${day}`;
+    };
+
+
+    return (
+        <>
+            <div className="bg-gradient-to-br from-gray-100 to-gray-300 min-h-screen">
+                {/* Todos Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
+                    {todos.map(todo => (
+                        <div
+                            key={todo.id}
+                            className="bg-gradient-to-r from-gray-700 via-gray-600 to-gray-800 bg-opacity-60 backdrop-blur-md text-white p-6 rounded-xl shadow-md border border-gray-200"
+                        >
+                            <div className='flex justify-between'>
+                                <div>
+                                    <h2 className="text-xl font-semibold mb-2 underline">{todo.name}</h2>
+                                    <p className="text-sm mb-4">{todo.description}</p>
+                                </div>
+                                {todo.done ?
+                                    <div className='text-xs mt-2'>
+                                        Task completed at <br />
+                                        <p className='text-green-600'>
+                                            {convertToIST(todo.updatedAt)}
+                                        </p>
+                                    </div>
+                                    :
+                                    // <div className='text-xs text-red-400 mt-2'>
+                                    //     Task pending !
+                                    // </div>
+                                    ""
+                                }
+                            </div>
+                            {todo.fileUrl && (
+                                <img
+                                    src={todo.fileUrl}
+                                    alt="Todo"
+                                    className="w-full h-48 object-cover rounded-lg border mb-4"
+                                />
+                            )}
+                            <div className="flex justify-between items-center gap-4 mt-4">
+                                <button
+                                    onClick={() => handleToggleDone(todo)}
+                                    className={`px-4 py-2 rounded-lg text-white font-medium transition duration-200 ${todo.done ? 'bg-green-700 hover:bg-green-800' : 'bg-yellow-700 hover:bg-yellow-800'}`}
+                                >
+                                    {todo.done ? 'Mark Undone' : 'Mark Done'}
+                                </button>
+                                <button
+                                    onClick={() => handleDelete(todo.id)}
+                                    className="px-4 py-2 bg-red-900 text-white rounded-lg hover:bg-red-950 transition duration-200"
+                                >
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                {/* Floating Add Todo Button */}
+                <button
+                    onClick={() => setShowModal(true)}
+                    className="fixed bottom-6 right-6 bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 transition duration-200 z-50"
+                >
+                    + Add Todo
+                </button>
+
+                {/* Modal */}
+                {showModal && (
+                    <div className="fixed inset-0 bg-white/30 backdrop-blur-md flex items-center justify-center z-50">
+                        <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md">
+                            <h2 className="text-xl font-semibold mb-4 text-gray-800">Add New Todo</h2>
+                            <input
+                                type="text"
+                                placeholder="Todo Name"
+                                value={newTodo.name}
+                                onChange={(e) => setNewTodo({ ...newTodo, name: e.target.value })}
+                                className="w-full p-2 mb-4 border border-gray-300 rounded"
+                            />
+                            <textarea
+                                placeholder="Description"
+                                value={newTodo.description}
+                                onChange={(e) => setNewTodo({ ...newTodo, description: e.target.value })}
+                                className="w-full p-2 mb-4 border border-gray-300 rounded"
+                            />
+
+                            {/* Custom File Button */}
+                            <label className="mb-4 block">
+                                <span className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg cursor-pointer hover:bg-gray-400 transition inline-block">
+                                    Choose Image
+                                </span>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => setNewTodo({ ...newTodo, file: e.target.files[0] })}
+                                    className="hidden"
+                                />
+                            </label>
+                            {newTodo.file && (
+                                <p className="text-sm text-gray-600 mb-4">Selected: {newTodo.file.name}</p>
+                            )}
+
+                            <div className="flex justify-end gap-2">
+                                <button
+                                    onClick={() => setShowModal(false)}
+                                    className="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={handleAdd}
+                                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                                >
+                                    Submit
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </div>
+        </>
+    );
+}
+
+export default Todos;

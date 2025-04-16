@@ -1,0 +1,11 @@
+{
+  "AppSyncApiName": "todotrail1",
+  "DynamoDBBillingMode": "PAY_PER_REQUEST",
+  "DynamoDBEnableServerSideEncryption": false,
+  "AuthCognitoUserPoolId": {
+    "Fn::GetAtt": [
+      "authtodotrail1cb659a04",
+      "Outputs.UserPoolId"
+    ]
+  }
+}
