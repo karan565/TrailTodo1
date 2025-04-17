@@ -12,12 +12,40 @@ function Todos({ user }) {
     const [newTodo, setNewTodo] = useState({ name: '', description: '', file: null });
     const [showModal, setShowModal] = useState(false);
     const [editTodo, setEditTodo] = useState(null); // Holds the todo being edited
+    const [selectedImageUrl, setSelectedImageUrl] = useState(null);
+
 
     //const navigate = useNavigate();
 
     useEffect(() => {
         fetchTodos();
     }, []);
+
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === 'Escape') {
+                setSelectedImageUrl(null);
+            }
+        };
+
+        const handlePopState = () => {
+            setSelectedImageUrl(null);
+        };
+
+        if (selectedImageUrl) {
+            // Push dummy state into history
+            window.history.pushState({ imagePreview: true }, '');
+            window.addEventListener('popstate', handlePopState);
+        }
+
+        window.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+            window.removeEventListener('popstate', handlePopState);
+        };
+    }, [selectedImageUrl]);
+
 
     const fetchTodos = async () => {
         try {
@@ -200,8 +228,10 @@ function Todos({ user }) {
                                 <img
                                     src={todo.fileUrl}
                                     alt="Todo"
-                                    className="w-full h-48 object-cover rounded-lg border mb-4"
+                                    className="w-full h-48 object-cover rounded-lg border mb-4 cursor-pointer hover:opacity-80 transition"
+                                    onClick={() => setSelectedImageUrl(todo.fileUrl)}
                                 />
+
                             ) : (
                                 <img
                                     src={`\noImageAvailable.png`}
@@ -212,6 +242,7 @@ function Todos({ user }) {
                                     }}
                                     className="w-full h-48 object-contain rounded-lg border mb-4"
                                 />
+
                             )}
 
                             <div className="flex justify-between items-center gap-4 mt-4">
@@ -358,7 +389,21 @@ function Todos({ user }) {
                         </div>
                     </div>
                 )}
-
+                {selectedImageUrl && (
+                    <div
+                        className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-[100]"
+                        onClick={() => setSelectedImageUrl(null)}
+                        onKeyDown={(e) => e.key === 'Escape' && setSelectedImageUrl(null)}
+                        tabIndex={0}
+                    >
+                        <img
+                            src={selectedImageUrl}
+                            alt="Full Screen Preview"
+                            className="max-w-full max-h-full object-contain p-4 rounded-lg"
+                            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking on the image
+                        />
+                    </div>
+                )}
             </div>
         </>
     );
