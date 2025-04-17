@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
-import '../../public/style.css';
+
 
 const LogoutButton = ({ onLogout }) => {
     useEffect(() => {
         const script = document.createElement('script');
-        script.src = '../../public/script.js';
+        script.src = '/script.js';
         script.async = true;
         document.body.appendChild(script);
 
