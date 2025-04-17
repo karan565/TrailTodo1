@@ -48,7 +48,7 @@ function App() {
       <nav className="bg-gradient-to-r from-gray-700 via-gray-600 to-gray-800 bg-opacity-60 backdrop-blur-md text-white px-6 py-4 flex justify-between items-center shadow-md rounded-b-lg">
 
         {/* Left side - Welcome text */}
-        <h1 className="text-2xl font-semibold">Welcome, {user.signInDetails.loginId} !</h1>
+        <h1 className="text-2xl font-semibold">Welcome, User !</h1>
 
         {/* Right side - Add Todo + Logout buttons */}
         <div className="flex gap-4 items-center">
