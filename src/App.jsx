@@ -42,7 +42,6 @@ function App() {
   if (!user) {
     return <Login onLogin={setUser} />;
   }
-  console.log(user)
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-600 via-gray-200 to-gray-600 ">
