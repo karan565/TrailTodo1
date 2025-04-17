@@ -4,8 +4,8 @@ import { Amplify } from 'aws-amplify';
 import awsExports from "./aws-exports";
 import { getCurrentUser, signOut } from 'aws-amplify/auth';
 import './index.css';
-import Login from "./components/login";
-import Todos from "./components/todos";
+import Login from "./components/Login";
+import Todos from "./components/Todos";
 import LogoutButton from './components/LogoutButton';
 
 
