@@ -234,8 +234,8 @@ function Todos({ user }) {
 
                             ) : (
                                 <img
-                                    src={`\noImageAvailable.png`}
-                                    alt="Fallback"
+                                    src="/noImageAvailable.png"
+                                    alt="no image available"
                                     onError={(e) => {
                                         e.target.onerror = null; // Prevents infinite loop
                                         e.target.style.display = 'none'; // Hides image if fallback fails
