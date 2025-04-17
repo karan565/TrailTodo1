@@ -19,6 +19,7 @@ Amplify.configure(awsExports);
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true); // new loading state
+  const [greeting, setGreeting] = useState("");
 
   const checkUser = async () => {
     try {
@@ -34,6 +35,22 @@ function App() {
 
   useEffect(() => {
     checkUser();
+  }, []);
+
+  useEffect(() => {
+    const getISTGreeting = () => {
+      const now = new Date();
+      const utc = now.getTime() + now.getTimezoneOffset() * 60000;
+      const istOffset = 5.5 * 60 * 60000;
+      const istTime = new Date(utc + istOffset);
+      const hour = istTime.getHours();
+
+      if (hour >= 5 && hour < 12) return "Good morning";
+      else if (hour >= 12 && hour < 17) return "Good afternoon";
+      else return "Good evening";
+    };
+
+    setGreeting(getISTGreeting());
   }, []);
 
   const handleLogout = async () => {
@@ -58,7 +75,7 @@ function App() {
     <div className="min-h-screen bg-gradient-to-br from-gray-600 via-gray-200 to-gray-600">
       <nav className="bg-gradient-to-r from-gray-700 via-gray-600 to-gray-800 bg-opacity-60 backdrop-blur-md text-white px-6 py-4 flex justify-between items-center shadow-md rounded-b-lg">
         <h1 className="text-2xl font-semibold">
-          Welcome, {user?.attributes?.name || user?.attributes?.email?.split('@')[0] || 'User'} !!
+          {greeting}, {user?.attributes?.name || user?.attributes?.email?.split('@')[0] || 'User'} !
         </h1>
         <div className="flex gap-4 items-center">
           <LogoutButton onLogout={handleLogout} />
