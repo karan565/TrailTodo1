@@ -20,7 +20,6 @@ function Todos({ user }) {
     const fetchTodos = async () => {
         try {
             const res = await client.graphql({ query: listTodos });
-            console.log(res);
             const todosWithUrl = await Promise.all(
                 res.data.listTodos.items.map(async (todo) => {
                     if (todo.file) {
