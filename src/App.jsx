@@ -58,7 +58,7 @@ function App() {
     <div className="min-h-screen bg-gradient-to-br from-gray-600 via-gray-200 to-gray-600">
       <nav className="bg-gradient-to-r from-gray-700 via-gray-600 to-gray-800 bg-opacity-60 backdrop-blur-md text-white px-6 py-4 flex justify-between items-center shadow-md rounded-b-lg">
         <h1 className="text-2xl font-semibold">
-          Welcome, {user?.attributes?.email?.split('@')[0] || 'User'} !
+          Welcome, {user?.attributes?.name || user?.attributes?.email?.split('@')[0] || 'User'} !
         </h1>
         <div className="flex gap-4 items-center">
           <LogoutButton onLogout={handleLogout} />
