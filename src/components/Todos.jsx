@@ -224,19 +224,20 @@ function Todos({ user }) {
                                 />
 
                             )}
-                            <div className="flex justify-between items-center gap-4 mt-4">
+
+                            <div className="flex justify-between items-center  mt-4">
                                 <button
                                     onClick={() => handleToggleDone(todo)}
-                                    className={`px-7 py-2 rounded-lg text-white font-medium transition duration-200 ${todo.done ? 'bg-green-700 hover:bg-green-800' : 'bg-yellow-700 hover:bg-yellow-800'}`}
+                                    className={` py-2 rounded-lg text-white font-medium transition duration-200 ${todo.done ? 'px-5 bg-green-700 hover:bg-green-800' : 'px-7 bg-yellow-700 hover:bg-yellow-800'}`}
                                 >
                                     {todo.done ? 'Undone' : 'Done'}
                                 </button>
 
-                                <div className="flex gap-2">
+                                <div className="flex justify-between items-center">
                                     <button
                                         onClick={() => !todo.done && setEditTodo(todo)}
                                         disabled={todo.done}
-                                        className={`px-7 py-2 mx-2 rounded-lg transition duration-200 flex items-center gap-1 ${todo.done
+                                        className={`px-7 py-2 mx-3 rounded-lg transition duration-200 flex items-center gap-1 ${todo.done
                                             ? 'bg-gray-400 text-white cursor-not-allowed line-through'
                                             : 'bg-blue-900 text-white hover:bg-blue-950'
                                             }`}
