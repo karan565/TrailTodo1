@@ -233,15 +233,9 @@ function Todos({ user }) {
                                 />
 
                             ) : (
-                                <img
-                                    src="/noImageAvailable.png"
-                                    alt="no image available"
-                                    onError={(e) => {
-                                        e.target.onerror = null; // Prevents infinite loop
-                                        e.target.style.display = 'none'; // Hides image if fallback fails
-                                    }}
-                                    className="w-full h-48 object-contain rounded-lg border mb-4"
-                                />
+                                <div className='flex items-center justify-center w-full h-48 object-cover rounded-lg border mb-4 text-2xl'>
+                                    No Image Found...
+                                </div>
 
                             )}
 

@@ -65,6 +65,11 @@ function App() {
         </div>
       </nav>
       <Todos />
+      <footer className=" bottom-0 left-0 w-full bg-gradient-to-r from-gray-700 via-gray-600 to-gray-800 bg-opacity-60 backdrop-blur-md text-white text-center py-3 text-base z-50">
+        © 2025 Karan. All rights reserved. <br />
+        Built with <span className="text-red-500">❤️</span> by <span className="font-semibold">Karan Vaghela</span>.
+      </footer>
+
     </div>
   );
 }
