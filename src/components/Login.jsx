@@ -13,7 +13,7 @@ function Login({ onLogin }) {
         e.preventDefault();
         try {
             const user = await signIn({ username: email, password });
-            onLogin(user);
+            await onLogin(user);
             navigate('/'); 
         } catch (err) {
             console.error('Login error:', err);
