@@ -11,7 +11,9 @@ function Todos({ user }) {
     const [todos, setTodos] = useState([]);
     const [newTodo, setNewTodo] = useState({ name: '', description: '', file: null });
     const [showModal, setShowModal] = useState(false);
-    const navigate = useNavigate();
+    const [editTodo, setEditTodo] = useState(null); // Holds the todo being edited
+
+    //const navigate = useNavigate();
 
     useEffect(() => {
         fetchTodos();
@@ -117,6 +119,44 @@ function Todos({ user }) {
         return `${time}, ${day}`;
     };
 
+    const handleUpdate = async (todo) => {
+        try {
+            let updatedFields = {
+                id: todo.id,
+                name: todo.name,
+                description: todo.description,
+            };
+
+            if (todo.newFile) {
+                const newFileName = `${Date.now()}-${todo.newFile.name}`;
+                const newS3Path = `todos/${newFileName}`;
+
+                // Upload new file
+                await uploadData({
+                    path: newS3Path,
+                    data: todo.newFile,
+                    options: { level: 'public' }
+                }).result;
+
+                // Remove old file
+                if (todo.file) {
+                    const oldKey = todo.file.replace(/^\/?public\//, '');
+                    await remove({ key: oldKey, options: { level: 'public' } });
+                }
+
+                updatedFields.file = newS3Path;
+            }
+
+            await client.graphql({ query: updateTodo, variables: { input: updatedFields } });
+
+            setEditTodo(null);
+            fetchTodos();
+        } catch (error) {
+            console.error("Error updating todo:", error);
+        }
+    };
+
+
 
     return (
         <>
@@ -161,13 +201,25 @@ function Todos({ user }) {
                                 >
                                     {todo.done ? 'Mark Undone' : 'Mark Done'}
                                 </button>
-                                <button
-                                    onClick={() => handleDelete(todo.id)}
-                                    className="px-4 py-2 bg-red-900 text-white rounded-lg hover:bg-red-950 transition duration-200"
-                                >
-                                    Delete
-                                </button>
+
+                                <div className="flex gap-2">
+                                    {!todo.done && (
+                                        <button
+                                            onClick={() => setEditTodo(todo)}
+                                            className="px-7 py-2 bg-blue-900 text-white rounded-lg hover:bg-blue-950 transition duration-200"
+                                        >
+                                            Edit
+                                        </button>
+                                    )}
+                                    <button
+                                        onClick={() => handleDelete(todo.id)}
+                                        className="px-4 py-2 bg-red-900 text-white rounded-lg hover:bg-red-950 transition duration-200"
+                                    >
+                                        Delete
+                                    </button>
+                                </div>
                             </div>
+
                         </div>
                     ))}
                 </div>
@@ -232,6 +284,54 @@ function Todos({ user }) {
                         </div>
                     </div>
                 )}
+                {editTodo && (
+                    <div className="fixed inset-0 bg-white/30 backdrop-blur-md flex items-center justify-center z-50">
+                        <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md">
+                            <h2 className="text-xl font-semibold mb-4 text-gray-800">Edit Todo</h2>
+                            <input
+                                type="text"
+                                value={editTodo.name}
+                                onChange={(e) => setEditTodo({ ...editTodo, name: e.target.value })}
+                                className="w-full p-2 mb-4 border border-gray-300 rounded"
+                            />
+                            <textarea
+                                value={editTodo.description}
+                                onChange={(e) => setEditTodo({ ...editTodo, description: e.target.value })}
+                                className="w-full p-2 mb-4 border border-gray-300 rounded"
+                            />
+                            <label className="mb-4 block">
+                                <span className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg cursor-pointer hover:bg-gray-400 transition inline-block">
+                                    Replace Image
+                                </span>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => setEditTodo({ ...editTodo, newFile: e.target.files[0] })}
+                                    className="hidden"
+                                />
+                            </label>
+                            {editTodo.newFile && (
+                                <p className="text-sm text-gray-600 mb-4">New: {editTodo.newFile.name}</p>
+                            )}
+
+                            <div className="flex justify-end gap-2">
+                                <button
+                                    onClick={() => setEditTodo(null)}
+                                    className="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={() => handleUpdate(editTodo)}
+                                    className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                                >
+                                    Update
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
             </div>
         </>
     );
