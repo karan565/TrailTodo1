@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 import '../../public/style.css';
 
-const LogoutButton = () => {
+const LogoutButton = ({ onLogout }) => {
     useEffect(() => {
         const script = document.createElement('script');
-        script.src = '../../public/script.js'; 
+        script.src = '../../public/script.js';
         script.async = true;
         document.body.appendChild(script);
 
@@ -15,7 +15,7 @@ const LogoutButton = () => {
 
     return (
         <div class="background background--light">
-            < button class="logoutButton logoutButton--dark" >
+            < button class="logoutButton logoutButton--dark" onClick={onLogout}>
                 < svg class="doorway" viewBox="0 0 100 100" >
                     <path
                         d="M93.4 86.3H58.6c-1.9 0-3.4-1.5-3.4-3.4V17.1c0-1.9 1.5-3.4 3.4-3.4h34.8c1.9 0 3.4 1.5 3.4 3.4v65.8c0 1.9-1.5 3.4-3.4 3.4z"
