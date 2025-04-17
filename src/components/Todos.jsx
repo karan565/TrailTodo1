@@ -42,8 +42,17 @@ function Todos({ user }) {
 
     const handleAdd = async () => {
         try {
+            if (!newTodo.name.trim() && !newTodo.description.trim()) {
+                alert('Name and description are required.');
+                return;
+            } else if (!newTodo.name.trim()) {
+                alert('Name  are required.');
+                return;
+            } else if (!newTodo.description.trim()) {
+                alert('Description are required.');
+                return;
+            }
             let fileKey = null;
-
             if (newTodo.file) {
                 const fileName = `${Date.now()}-${newTodo.file.name}`;
                 const s3Path = `todos/${fileName}`;
@@ -187,13 +196,24 @@ function Todos({ user }) {
                                     ""
                                 }
                             </div>
-                            {todo.fileUrl && (
+                            {todo.fileUrl ? (
                                 <img
                                     src={todo.fileUrl}
                                     alt="Todo"
                                     className="w-full h-48 object-cover rounded-lg border mb-4"
                                 />
+                            ) : (
+                                <img
+                                    src={`\noImageAvailable.png`}
+                                    alt="Fallback"
+                                    onError={(e) => {
+                                        e.target.onerror = null; // Prevents infinite loop
+                                        e.target.style.display = 'none'; // Hides image if fallback fails
+                                    }}
+                                    className="w-full h-48 object-contain rounded-lg border mb-4"
+                                />
                             )}
+
                             <div className="flex justify-between items-center gap-4 mt-4">
                                 <button
                                     onClick={() => handleToggleDone(todo)}
@@ -248,12 +268,14 @@ function Todos({ user }) {
                                 value={newTodo.name}
                                 onChange={(e) => setNewTodo({ ...newTodo, name: e.target.value })}
                                 className="w-full p-2 mb-4 border border-gray-300 rounded"
+
                             />
                             <textarea
                                 placeholder="Description"
                                 value={newTodo.description}
                                 onChange={(e) => setNewTodo({ ...newTodo, description: e.target.value })}
                                 className="w-full p-2 mb-4 border border-gray-300 rounded"
+
                             />
 
                             {/* Custom File Button */}
