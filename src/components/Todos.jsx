@@ -13,6 +13,7 @@ function Todos({ user }) {
     const [showModal, setShowModal] = useState(false);
     const [editTodo, setEditTodo] = useState(null); // Holds the todo being edited
     const [selectedImageUrl, setSelectedImageUrl] = useState(null);
+    
 
 
     //const navigate = useNavigate();
