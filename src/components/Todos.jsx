@@ -27,9 +27,25 @@ function Todos({ user }) {
                 setSelectedImageUrl(null);
             }
         };
+
+        const handlePopState = () => {
+            setSelectedImageUrl(null);
+        };
+
+        if (selectedImageUrl) {
+            // Push dummy state into history
+            window.history.pushState({ imagePreview: true }, '');
+            window.addEventListener('popstate', handlePopState);
+        }
+
         window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, []);
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+            window.removeEventListener('popstate', handlePopState);
+        };
+    }, [selectedImageUrl]);
+
 
     const fetchTodos = async () => {
         try {
