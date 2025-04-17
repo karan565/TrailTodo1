@@ -197,20 +197,24 @@ function Todos({ user }) {
                             <div className="flex justify-between items-center gap-4 mt-4">
                                 <button
                                     onClick={() => handleToggleDone(todo)}
-                                    className={`px-4 py-2 rounded-lg text-white font-medium transition duration-200 ${todo.done ? 'bg-green-700 hover:bg-green-800' : 'bg-yellow-700 hover:bg-yellow-800'}`}
+                                    className={`px-7 py-2 rounded-lg text-white font-medium transition duration-200 ${todo.done ? 'bg-green-700 hover:bg-green-800' : 'bg-yellow-700 hover:bg-yellow-800'}`}
                                 >
-                                    {todo.done ? 'Mark Undone' : 'Mark Done'}
+                                    {todo.done ? 'Undone' : 'Done'}
                                 </button>
 
                                 <div className="flex gap-2">
-                                    {!todo.done && (
-                                        <button
-                                            onClick={() => setEditTodo(todo)}
-                                            className="px-7 py-2 bg-blue-900 text-white rounded-lg hover:bg-blue-950 transition duration-200"
-                                        >
-                                            Edit
-                                        </button>
-                                    )}
+                                    <button
+                                        onClick={() => !todo.done && setEditTodo(todo)}
+                                        disabled={todo.done}
+                                        className={`px-7 py-2 mx-2 rounded-lg transition duration-200 flex items-center gap-1 ${todo.done
+                                            ? 'bg-gray-400 text-white cursor-not-allowed line-through'
+                                            : 'bg-blue-900 text-white hover:bg-blue-950'
+                                            }`}
+                                    >
+                                        Edit
+                                    </button>
+
+
                                     <button
                                         onClick={() => handleDelete(todo.id)}
                                         className="px-4 py-2 bg-red-900 text-white rounded-lg hover:bg-red-950 transition duration-200"
@@ -219,6 +223,7 @@ function Todos({ user }) {
                                     </button>
                                 </div>
                             </div>
+
 
                         </div>
                     ))}
