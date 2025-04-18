@@ -70,6 +70,16 @@ function Todos({ user }) {
 
     const handleAdd = async () => {
         try {
+            if (!newTodo.name.trim() && !newTodo.description.trim()) {
+                alert('Title and description are required.');
+                return;
+            } else if (!newTodo.name.trim()) {
+                alert('Title  is required.');
+                return;
+            } else if (!newTodo.description.trim()) {
+                alert('Description is required.');
+                return;
+            }
             let fileKey = null;
 
             if (newTodo.file) {
@@ -149,6 +159,16 @@ function Todos({ user }) {
 
     const handleUpdate = async (todo) => {
         try {
+            if (!todo.name.trim() && !todo.description.trim()) {
+                alert('Title and description are required.');
+                return;
+            } else if (!todo.name.trim()) {
+                alert('Title  is required.');
+                return;
+            } else if (!todo.description.trim()) {
+                alert('Description is required.');
+                return;
+            }
             let updatedFields = {
                 id: todo.id,
                 name: todo.name,
