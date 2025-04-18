@@ -1,5 +1,39 @@
 @import "tailwindcss";
 
+.filterButton {
+  background: none;
+  border: 0;
+  color: #f4f7ff;
+  cursor: pointer;
+  display: block;
+  font-family: 'Quicksand', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  height: 40px;
+  outline: none;
+  padding: 0 0 0 20px;
+  perspective: 100px;
+  position: relative;
+  text-align: left;
+  width: 130px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.filterButton::before {
+  background-color: #ffffff17;
+  border-radius: 5px;
+  content: '';
+  display: block;
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  transform: none;
+  transition: transform 50ms ease;
+  width: 100%;
+  z-index: 2;
+}
+
 
 /* :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;

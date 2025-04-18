@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 const client = generateClient();
 
-function Todos({ user }) {
+function Todos({ searchQuery, filterType }) {
     const [todos, setTodos] = useState([]);
     const [newTodo, setNewTodo] = useState({ name: '', description: '', file: null });
     const [showModal, setShowModal] = useState(false);
@@ -68,6 +68,7 @@ function Todos({ user }) {
             console.error('Error fetching todos:', error);
         }
     };
+
 
     const handleAdd = async () => {
         try {
@@ -204,6 +205,39 @@ function Todos({ user }) {
         }
     };
 
+    const hasSearch = searchQuery.trim() !== '';
+
+    const searchedTodos = hasSearch
+        ? todos.filter(todo =>
+            todo.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            todo.description.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+        : todos;
+
+    const filterTodos = (todos, searchQuery, filterType) => {
+        const hasSearch = searchQuery.trim() !== '';
+
+        // Filter todos based on search query
+        const searchedTodos = hasSearch
+            ? todos.filter(todo =>
+                todo.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                todo.description.toLowerCase().includes(searchQuery.toLowerCase())
+            )
+            : todos;
+
+        // Filter todos based on the filter type (all, completed, remaining)
+        const filteredTodos = searchedTodos.filter(todo =>
+            filterType === 'all' ||
+            (filterType === 'completed' && todo.done) ||
+            (filterType === 'remaining' && !todo.done)
+        );
+
+        // If there's a search and no results found, show all todos, otherwise show filtered todos
+        return hasSearch && filteredTodos.length === 0 ? todos : filteredTodos;
+    };
+
+    // Usage in your component:
+    const filteredTodos = filterTodos(todos, searchQuery, filterType);
 
 
     return (
@@ -211,7 +245,7 @@ function Todos({ user }) {
             <div className="bg-gradient-to-br from-gray-100 to-gray-300 min-h-screen">
                 {/* Todos Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
-                    {todos.map(todo => (
+                    {filteredTodos.map(todo => (
                         <div
                             key={todo.id}
                             className="bg-gradient-to-r from-gray-700 via-gray-600 to-gray-800 bg-opacity-60 backdrop-blur-md text-white p-6 rounded-xl shadow-md border border-gray-200"
