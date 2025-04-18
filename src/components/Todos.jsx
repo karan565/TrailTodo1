@@ -205,14 +205,6 @@ function Todos({ searchQuery, filterType }) {
         }
     };
 
-    const hasSearch = searchQuery.trim() !== '';
-
-    const searchedTodos = hasSearch
-        ? todos.filter(todo =>
-            todo.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            todo.description.toLowerCase().includes(searchQuery.toLowerCase())
-        )
-        : todos;
 
     const filterTodos = (todos, searchQuery, filterType) => {
         const hasSearch = searchQuery.trim() !== '';
@@ -232,9 +224,9 @@ function Todos({ searchQuery, filterType }) {
             (filterType === 'remaining' && !todo.done)
         );
 
-        // If there's a search and no results found, show all todos, otherwise show filtered todos
-        return hasSearch && filteredTodos.length === 0 ? todos : filteredTodos;
+        return filteredTodos;
     };
+
 
     // Usage in your component:
     const filteredTodos = filterTodos(todos, searchQuery, filterType);
