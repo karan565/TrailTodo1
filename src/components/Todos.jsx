@@ -300,7 +300,7 @@ function Todos({ user }) {
                             <h2 className="text-xl font-semibold mb-4 text-gray-800">Add New Todo</h2>
                             <input
                                 type="text"
-                                placeholder="Todo Name"
+                                placeholder="Todo Title"
                                 value={newTodo.name}
                                 onChange={(e) => setNewTodo({ ...newTodo, name: e.target.value })}
                                 className="w-full p-2 mb-4 border border-gray-300 rounded"
@@ -354,11 +354,13 @@ function Todos({ user }) {
                             <input
                                 type="text"
                                 value={editTodo.name}
+                                placeholder="Todo Title"
                                 onChange={(e) => setEditTodo({ ...editTodo, name: e.target.value })}
                                 className="w-full p-2 mb-4 border border-gray-300 rounded"
                             />
                             <textarea
                                 value={editTodo.description}
+                                placeholder="Todo Description"
                                 onChange={(e) => setEditTodo({ ...editTodo, description: e.target.value })}
                                 className="w-full p-2 mb-4 border border-gray-300 rounded"
                             />
