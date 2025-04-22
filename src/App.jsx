@@ -88,13 +88,31 @@ function App() {
           {greeting}, {user?.attributes?.name || user?.attributes?.email?.split('@')[0] || 'User'} !
         </h1>
         <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 items-stretch sm:items-center w-full sm:w-auto">
-          <input
-            type="text"
-            placeholder="Search todos..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="px-2 py-1 rounded text-black bg-white w-full sm:w-auto"
-          />
+          <div className="relative w-full sm:w-80">
+            <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 103 10.5a7.5 7.5 0 0013.15 6.15z"
+                />
+              </svg>
+            </span>
+            <input
+              type="text"
+              placeholder="Search todos..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 pr-4 py-2 w-full rounded-xl bg-white/90 text-black placeholder-gray-500 shadow-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all"
+            />
+          </div>
+
 
           <div className="background background--light w-full sm:w-auto flex justify-end sm:justify-normal">
             <button className="filterButton" onClick={cycleFilter}>

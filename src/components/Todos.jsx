@@ -50,7 +50,22 @@ function Todos({ searchQuery, filterType }) {
 
     const fetchTodos = async () => {
         try {
-            const res = await client.graphql({ query: listTodos });
+            const customListTodos = `
+                query ListTodos {
+                    listTodos {
+                    items {
+                        id
+                        name
+                        description
+                        done
+                        file
+                        updatedAt
+                    }
+                    }
+                }
+                `;
+
+            const res = await client.graphql({ query: customListTodos });
             const todosWithUrl = await Promise.all(
                 res.data.listTodos.items.map(async (todo) => {
                     if (todo.file) {
