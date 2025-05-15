@@ -110,6 +110,7 @@ function App() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10 pr-4 py-2 w-full rounded-xl bg-white/90 text-black placeholder-gray-500 shadow-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all"
+              // className="pl-10 pr-4 py-2 w-full rounded-xl bg-white/90 text-black placeholder-gray-500 shadow-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/70 focus:border-transparent transition-all"
             />
           </div>
 
@@ -130,7 +131,7 @@ function App() {
         </div>
 
       </nav>
-      <Todos searchQuery={searchQuery} filterType={filterType} />
+      <Todos searchQuery={searchQuery} filterType={filterType} user={user} />
 
       <footer className=" bottom-0 left-0 w-full bg-gradient-to-r from-gray-700 via-gray-600 to-gray-800 bg-opacity-60 backdrop-blur-md text-white text-center py-3 text-base z-50">
         © 2025 Karan. All rights reserved. <br />

@@ -4,10 +4,11 @@ import { getUrl, uploadData, remove } from 'aws-amplify/storage';
 import { listTodos, getTodo } from '../graphql/queries';
 import { createTodo, updateTodo, deleteTodo } from '../graphql/mutations';
 import { useNavigate } from 'react-router-dom';
+import { generateClient } from 'aws-amplify/api';
 
 const client = generateClient();
 
-function Todos({ searchQuery, filterType }) {
+function Todos({ searchQuery, filterType, user }) {
     const [todos, setTodos] = useState([]);
     const [newTodo, setNewTodo] = useState({ name: '', description: '', file: null });
     const [showModal, setShowModal] = useState(false);
@@ -144,6 +145,17 @@ function Todos({ searchQuery, filterType }) {
 
     const handleToggleDone = async (todo) => {
         try {
+            console.log("user : ", user)
+            const data = "Hello " + user.name + ", Your Todo - '" + todo.name + "' with description - '" + todo.description + "' has been marked as completed successfully !"
+            console.log("data : ", data)
+            await client.functions.invoke({
+                name: "sendEmail-dev",
+                body: {
+                    email: "karanvaghela565@gmil.com",
+                    subject: "Todo completion update",
+                    body: data,
+                },
+            });
             await client.graphql({
                 query: updateTodo,
                 variables: { input: { id: todo.id, done: !todo.done } },
