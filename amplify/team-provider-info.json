@@ -17,6 +17,15 @@
       },
       "storage": {
         "TodoTrail1Files": {}
+      },
+      "function": {
+        "sendEmail": {
+          "deploymentBucketName": "amplify-todotrail1-dev-2e0d6-deployment",
+          "s3Key": "amplify-builds/sendEmail-636146345567786b6b6c-build.zip"
+        }
+      },
+      "api": {
+        "todotrail1": {}
       }
     }
   }
