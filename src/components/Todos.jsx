@@ -144,12 +144,13 @@ function Todos({ searchQuery, filterType, user }) {
 
     const handleToggleDone = async (todo) => {
         try {
+            console.log("user : ", user)
+            console.log("todo : ", todo)
             if (!todo.done) {
-                console.log("user : ", user)
                 const data = "Hello " + user.name + ", Your Todo - '" + todo.name + "' with description - '" + todo.description + "' has been marked as completed successfully !"
                 console.log("data : ", data)
                 await client.functions.invoke({
-                    name: "sendEmail-dev",
+                    name: "sendEmail",
                     body: {
                         email: "karanvaghela565@gmil.com",
                         subject: "Todo completion update",
