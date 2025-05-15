@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { generateClient } from 'aws-amplify/api';
+import { generateClient, invoke } from 'aws-amplify/api';
 import { getUrl, uploadData, remove } from 'aws-amplify/storage';
 import { listTodos, getTodo } from '../graphql/queries';
 import { createTodo, updateTodo, deleteTodo } from '../graphql/mutations';
@@ -147,16 +147,17 @@ function Todos({ searchQuery, filterType, user }) {
             console.log("user : ", user)
             console.log("todo : ", todo)
             if (!todo.done) {
-                const data = "Hello " + user.name + ", Your Todo - '" + todo.name + "' with description - '" + todo.description + "' has been marked as completed successfully !"
+                const data = "Hello " + user?.attributes?.name || user?.attributes?.email?.split('@')[0] || 'User' + ", Your Todo - '" + todo.name + "' with description - '" + todo.description + "' has been marked as completed successfully !"
                 console.log("data : ", data)
-                await client.functions.invoke({
-                    name: "sendEmail",
+                await invoke({
+                    functionName: "sendEmail",
                     body: {
                         email: "karanvaghela565@gmil.com",
                         subject: "Todo completion update",
                         body: data,
                     },
                 });
+
             }
             await client.graphql({
                 query: updateTodo,
