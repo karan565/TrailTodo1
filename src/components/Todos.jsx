@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { generateClient, invoke } from 'aws-amplify/api';
+import { generateClient } from 'aws-amplify/api';
+import { invoke } from 'aws-amplify/api/function';
 import { getUrl, uploadData, remove } from 'aws-amplify/storage';
 import { listTodos, getTodo } from '../graphql/queries';
 import { createTodo, updateTodo, deleteTodo } from '../graphql/mutations';
