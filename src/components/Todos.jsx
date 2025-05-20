@@ -257,11 +257,11 @@ function Todos({ searchQuery, filterType, user }) {
 
         // Filter todos based on the filter type (all, completed, remaining)
         const filteredTodos = searchedTodos.filter(todo =>
-            filterType === 'all' ||
+            filterType === 'all' || filterType === 'default' ||
             (filterType === 'completed' && todo.done) ||
             (filterType === 'remaining' && !todo.done)
         );
-   
+
         return filteredTodos;
     };
 
