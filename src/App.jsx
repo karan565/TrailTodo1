@@ -21,7 +21,7 @@ function App() {
   const [loading, setLoading] = useState(true); // new loading state
   const [greeting, setGreeting] = useState("");
   const [searchQuery, setSearchQuery] = useState('');
-  const [filterType, setFilterType] = useState('all'); // 'all' | 'completed' | 'remaining'
+  const [filterType, setFilterType] = useState('default'); // 'all' | 'completed' | 'remaining'
 
 
   const checkUser = async () => {
