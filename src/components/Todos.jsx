@@ -261,7 +261,7 @@ function Todos({ searchQuery, filterType, user }) {
             (filterType === 'completed' && todo.done) ||
             (filterType === 'remaining' && !todo.done)
         );
-
+   
         return filteredTodos;
     };
 

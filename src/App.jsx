@@ -37,7 +37,7 @@ function App() {
   };
 
   const cycleFilter = () => {
-    if (filterType === 'all') setFilterType('completed');
+    if (filterType === 'all' || filterType === 'default') setFilterType('completed');
     else if (filterType === 'completed') setFilterType('remaining');
     else setFilterType('all');
   };
@@ -110,7 +110,7 @@ function App() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10 pr-4 py-2 w-full rounded-xl bg-white/90 text-black placeholder-gray-500 shadow-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all"
-              // className="pl-10 pr-4 py-2 w-full rounded-xl bg-white/90 text-black placeholder-gray-500 shadow-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/70 focus:border-transparent transition-all"
+            // className="pl-10 pr-4 py-2 w-full rounded-xl bg-white/90 text-black placeholder-gray-500 shadow-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/70 focus:border-transparent transition-all"
             />
           </div>
 
@@ -118,6 +118,7 @@ function App() {
           <div className="background background--light w-full sm:w-auto flex justify-end sm:justify-normal">
             <button className="filterButton" onClick={cycleFilter}>
               <span className="button-text">
+                {filterType === 'default' && 'Filter Todos'}
                 {filterType === 'all' && 'All Todos'}
                 {filterType === 'completed' && '✅ Completed'}
                 {filterType === 'remaining' && '🔄 Incomplete'}
