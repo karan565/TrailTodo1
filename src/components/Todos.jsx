@@ -245,7 +245,7 @@ function Todos({ searchQuery, filterType, user }) {
 
 
     const filterTodos = (todos, searchQuery, filterType) => {
-        const hasSearch = searchQuery.trim() !== '';
+        const hasSearch = searchQuery.trim() !== '' && searchQuery.length >= 3;
 
         // Filter todos based on search query
         const searchedTodos = hasSearch

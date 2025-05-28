@@ -108,12 +108,7 @@ function App() {
               type="text"
               placeholder="Search todos..."
               value={searchQuery}
-              //onChange={(e) => setSearchQuery(e.target.value)}
-              onChange={(e) => {
-                if (e.target.value.length >= 3) {
-                  setSearchQuery(e.target.value);
-                }
-              }}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10 pr-4 py-2 w-full rounded-xl bg-white/90 text-black placeholder-gray-500 shadow-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all"
             // className="pl-10 pr-4 py-2 w-full rounded-xl bg-white/90 text-black placeholder-gray-500 shadow-md border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/70 focus:border-transparent transition-all"
             />
